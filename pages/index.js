@@ -19,6 +19,13 @@ export default function Home() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto';
+      inputRef.current.style.height = inputRef.current.scrollHeight + 'px';
+    }
+  }, [input]);
+
   const handleStarter = (s) => {
     if (!s.prompt) {
       inputRef.current?.focus();
@@ -32,6 +39,7 @@ export default function Home() {
     const msg = text || input;
     if (!msg.trim() || loading) return;
     setInput('');
+    if (inputRef.current) inputRef.current.style.height = 'auto';
     setStarted(true);
 
     const userMsg = { role: 'user', content: msg };
@@ -55,10 +63,17 @@ export default function Home() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
   return (
     <>
       <Head>
-        <title>Zach Brown</title>
+        <title>My Guy Zach</title>
         <meta name="description" content="You've got a role to fill. Ask me anything." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -121,13 +136,14 @@ export default function Home() {
             </div>
 
             <div style={styles.inputRow}>
-              <input
+              <textarea
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+                onKeyDown={handleKeyDown}
                 placeholder="Ask me anything. We'll see if Zach has solved that problem before."
                 style={styles.input}
+                rows={1}
               />
               <button
                 onClick={() => sendMessage()}
@@ -161,7 +177,7 @@ const styles = {
   },
   container: {
     width: '100%',
-    maxWidth: 600,
+    maxWidth: 680,
     display: 'flex',
     flexDirection: 'column',
     gap: '1.5rem',
@@ -206,8 +222,8 @@ const styles = {
     flexDirection: 'column',
   },
   messages: {
-    minHeight: 300,
-    maxHeight: 420,
+    minHeight: 420,
+    maxHeight: '60vh',
     overflowY: 'auto',
     padding: '1.25rem',
     display: 'flex',
@@ -263,7 +279,7 @@ const styles = {
     gap: 8,
     padding: '0.85rem 1rem',
     borderTop: '1px solid #E8E4E0',
-    alignItems: 'center',
+    alignItems: 'flex-end',
   },
   input: {
     flex: 1,
@@ -274,6 +290,11 @@ const styles = {
     background: '#FAFAF8',
     color: '#111',
     lineHeight: 1.5,
+    resize: 'none',
+    overflow: 'hidden',
+    minHeight: 38,
+    maxHeight: 160,
+    fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif',
   },
   sendBtn: {
     padding: '9px 20px',
@@ -285,6 +306,7 @@ const styles = {
     color: '#111',
     flexShrink: 0,
     transition: 'background 0.15s',
+    marginBottom: 1,
   },
   footer: {
     fontSize: 11,
