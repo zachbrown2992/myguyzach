@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import Head from 'next/head';
 
 const STARTERS = [
@@ -117,7 +118,7 @@ export default function Home() {
                   }}
                 >
                   <div style={m.role === 'user' ? styles.bubbleUser : styles.bubbleAI}>
-                    {m.content}
+                    {m.role === 'user' ? m.content : <div className="prose"><ReactMarkdown>{m.content}</ReactMarkdown></div>}
                   </div>
                 </div>
               ))}
