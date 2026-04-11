@@ -177,7 +177,7 @@ const styles = {
   },
   container: {
     width: '100%',
-    maxWidth: 680,
+    maxWidth: 860,
     display: 'flex',
     flexDirection: 'column',
     gap: '1.5rem',
